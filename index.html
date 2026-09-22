@@ -1,1024 +1,260 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRILL & CHILL - The Burger Lab</title>
+import React, { useState } from 'react';
+import { ShoppingBag, Sparkles, ChevronRight, CheckCircle2 } from 'lucide-react';
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+const Buns = [
+  { id: 'brioche', name: 'Artisanal Brioche', price: 120, description: 'Soft, buttery toasted bun' },
+  { id: 'sesame', name: 'Classic Sesame', price: 90, description: 'Toasted bun with toasted sesame seeds' },
+  { id: 'potato', name: 'Potato Bun', price: 110, description: 'Extra pillow-soft savory potato bun' }
+];
 
-    <!-- FontAwesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+const Patties = [
+  { id: 'angus', name: 'Smash Angus Beef', price: 350, description: '100% Prime crushed beef patty' },
+  { id: 'zinger', name: 'Crispy Zinger', price: 280, description: 'Hand-battered extra crispy fillet' },
+  { id: 'grilled', name: 'Flame Grilled Chicken', price: 290, description: 'Juicy herb-marinated grilled chicken' }
+];
 
-    <!-- AOS CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+const Toppings = [
+  { id: 'cheddar', name: 'Aged Cheddar', price: 80 },
+  { id: 'bacon', name: 'Crispy Beef Bacon', price: 120 },
+  { id: 'jalapenos', name: 'Pickled Jalapeños', price: 40 },
+  { id: 'sauce', name: 'Signature Secret Sauce', price: 50 }
+];
 
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+export default function ProfessionalBurgerLab() {
+  const [selectedBun, setSelectedBun] = useState(Buns[0]);
+  const [selectedPatty, setSelectedPatty] = useState(Patties[0]);
+  const [pattyCount, setPattyCount] = useState(2);
+  const [selectedToppings, setSelectedToppings] = useState(['cheddar', 'sauce']);
 
-    <!-- SweetAlert2 CSS & JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  const toggleTopping = (id) => {
+    setSelectedToppings(prev =>
+      prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
+    );
+  };
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brandDark: '#0e0e10',
-                        brandCard: '#18181c',
-                        brandCardHover: '#222228',
-                        brandRed: '#E63946',
-                        brandRedDark: '#C92A37',
-                    },
-                    fontFamily: {
-                        oswald: ['Oswald', 'sans-serif'],
-                        poppins: ['Poppins', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+  const calculateTotal = () => {
+    const bunPrice = selectedBun.price;
+    const pattyPrice = selectedPatty.price * pattyCount;
+    const toppingsPrice = selectedToppings.reduce((acc, topId) => {
+      const topping = Toppings.find(t => t.id === topId);
+      return acc + (topping ? topping.price : 0);
+    }, 0);
+    return bunPrice + pattyPrice + toppingsPrice;
+  };
 
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0e0e10;
-            color: #FFFFFF;
-            overflow-x: hidden;
-        }
-        h1, h2, h3, h4, .font-oswald {
-            font-family: 'Oswald', sans-serif;
-        }
-        .glass-nav {
-            background: rgba(14, 14, 16, 0.9);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-card {
-            background: rgba(24, 24, 28, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0e0e10;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #E63946;
-            border-radius: 4px;
-        }
-        @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
-        }
-        .animate-float {
-            animation: floatSlow 4s ease-in-out infinite;
-        }
-        .glow-red {
-            box-shadow: 0 0 20px rgba(230, 57, 70, 0.4);
-        }
-        .glow-red-sm {
-            box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
-        }
-        /* Marquee Animation */
-        .marquee-wrapper {
-            display: flex;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .marquee-content {
-            display: flex;
-            animation: marquee 25s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>
-</head>
-<body class="relative min-h-screen flex flex-col">
+  return (
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-red-500 selection:text-white">
+      {/* Top Banner */}
+      <div className="bg-gradient-to-r from-red-600 via-orange-500 to-red-600 text-white text-xs font-semibold py-2 px-4 text-center tracking-wide uppercase">
+        🚀 Free Express Delivery on orders over Rs. 1500 | Use Code: <span className="underline font-bold">GRILLNOW</span>
+      </div>
 
-    <!-- Top Animated Continuous Moving Marquee Bar -->
-    <div class="bg-gradient-to-r from-brandRedDark via-brandRed to-brandRedDark text-white text-xs font-semibold py-2 border-b border-red-700/50 overflow-hidden">
-        <div class="marquee-wrapper">
-            <div class="marquee-content flex items-center gap-12 font-oswald tracking-wider uppercase">
-                <span><i class="fa-solid fa-fire text-amber-300 mr-2"></i> FREE DELIVERY ON ALL ORDERS OVER RS. 1500! USE CODE: <span class="bg-white text-brandRed font-bold px-2 py-0.5 rounded ml-1">GRILLNOW</span></span>
-                <span><i class="fa-solid fa-bolt text-amber-300 mr-2"></i> FRESH SMASHED BEEF PATTIES DAILY</span>
-                <span><i class="fa-solid fa-clock text-amber-300 mr-2"></i> OPEN TILL 3 AM ON WEEKENDS</span>
-                <span><i class="fa-solid fa-burger text-amber-300 mr-2"></i> TRY OUR NEW CUSTOM BURGER LAB</span>
-                <!-- Duplicate for infinite seamless loop -->
-                <span><i class="fa-solid fa-fire text-amber-300 mr-2"></i> FREE DELIVERY ON ALL ORDERS OVER RS. 1500! USE CODE: <span class="bg-white text-brandRed font-bold px-2 py-0.5 rounded ml-1">GRILLNOW</span></span>
-                <span><i class="fa-solid fa-bolt text-amber-300 mr-2"></i> FRESH SMASHED BEEF PATTIES DAILY</span>
-                <span><i class="fa-solid fa-clock text-amber-300 mr-2"></i> OPEN TILL 3 AM ON WEEKENDS</span>
-                <span><i class="fa-solid fa-burger text-amber-300 mr-2"></i> TRY OUR NEW CUSTOM BURGER LAB</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sticky Navigation Bar -->
-    <nav class="sticky top-0 z-40 glass-nav py-3 transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="w-11 h-11 rounded-xl bg-brandRed flex items-center justify-center text-white font-bold text-2xl group-hover:rotate-12 transition-transform duration-300 shadow-lg glow-red-sm">
-                    <i class="fa-solid fa-burger"></i>
-                </div>
-                <div>
-                    <span class="font-oswald text-2xl font-bold tracking-wider text-white uppercase block leading-none">GRILL & CHILL</span>
-                    <span class="text-[10px] tracking-widest text-brandRed font-bold block leading-none uppercase mt-0.5">The Burger Lab</span>
-                </div>
-            </a>
-
-            <!-- Desktop Nav Links with Custom Highlights -->
-            <div class="hidden md:flex items-center gap-6 font-medium text-xs uppercase tracking-wider text-gray-300">
-                <a href="#hero" class="hover:text-brandRed transition-colors">Home</a>
-                <a href="#deals" class="hover:text-brandRed transition-colors flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brandRed animate-ping"></span> Hot Deals</a>
-                <a href="#menu" class="hover:text-brandRed transition-colors">Menu</a>
-                <a href="#burger-builder" class="hover:text-brandRed transition-colors">Burger Lab</a>
-                <a href="#chefs" class="hover:text-brandRed transition-colors">Chefs</a>
-                <a href="#branches" class="hover:text-brandRed transition-colors">Branches</a>
-                <span class="bg-white text-brandDark font-bold px-2.5 py-1 rounded text-[11px] shadow">KARACHI & LAHORE</span>
-            </div>
-
-            <!-- Right Actions -->
-            <div class="flex items-center gap-3">
-                <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-xl bg-brandCard hover:bg-brandRed text-white transition-all border border-gray-800">
-                    <i class="fa-solid fa-cart-shopping text-base"></i>
-                    <span id="cart-counter" class="absolute -top-1.5 -right-1.5 bg-brandRed text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-brandDark">0</span>
-                </button>
-
-                <a href="#burger-builder" class="hidden sm:inline-flex items-center gap-2 bg-brandRed hover:bg-brandRedDark text-white px-4 py-2.5 rounded-xl font-bold text-xs uppercase transition-all glow-red-sm">
-                    <i class="fa-solid fa-flask"></i> Build Burger
-                </a>
-
-                <button onclick="toggleMobileMenu()" class="md:hidden text-xl text-white p-2">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
+      {/* Navigation */}
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-neutral-950/80 border-b border-neutral-800/60 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-red-600/30">
+            G
+          </div>
+          <div>
+            <h1 className="font-extrabold text-lg tracking-tight text-white leading-none">GRILL & CHILL</h1>
+            <span className="text-[10px] tracking-widest text-red-500 uppercase font-bold">The Burger Lab</span>
+          </div>
         </div>
 
-        <!-- Mobile Drawer Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-brandCard border-b border-gray-800 px-4 py-4 space-y-3 mt-2">
-            <a href="#hero" onclick="toggleMobileMenu()" class="block text-sm text-gray-200 hover:text-brandRed">Home</a>
-            <a href="#deals" onclick="toggleMobileMenu()" class="block text-sm text-gray-200 hover:text-brandRed">Hot Deals</a>
-            <a href="#menu" onclick="toggleMobileMenu()" class="block text-sm text-gray-200 hover:text-brandRed">Menu</a>
-            <a href="#burger-builder" onclick="toggleMobileMenu()" class="block text-sm text-gray-200 hover:text-brandRed">Burger Lab Customizer</a>
-            <a href="#chefs" onclick="toggleMobileMenu()" class="block text-sm text-gray-200 hover:text-brandRed">Chefs</a>
-            <a href="#branches" onclick="toggleMobileMenu()" class="block text-sm text-gray-200 hover:text-brandRed">Branches</a>
-        </div>
-    </nav>
+        <nav className="hidden md:flex space-x-8 text-sm font-medium text-neutral-400">
+          <a href="#home" className="hover:text-white transition-colors">Home</a>
+          <a href="#deals" className="hover:text-white transition-colors">Hot Deals</a>
+          <a href="#menu" className="hover:text-white transition-colors">Menu</a>
+          <a href="#lab" className="text-red-500 font-semibold border-b-2 border-red-500 pb-1">Burger Lab</a>
+          <a href="#branches" className="hover:text-white transition-colors">Branches</a>
+        </nav>
 
-    <!-- Hero Section -->
-    <section id="hero" class="relative py-16 md:py-24 bg-gradient-to-b from-brandDark via-brandCard/30 to-brandDark flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                
-                <div data-aos="fade-right">
-                    <span class="inline-block px-3 py-1 bg-brandRed/20 text-brandRed font-semibold text-xs rounded-full uppercase tracking-widest border border-brandRed/30 mb-4">
-                        🔥 CRAFTED TO PERFECTION
-                    </span>
-                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight leading-tight text-white mb-6">
-                        SMASHED. <span class="text-transparent bg-clip-text bg-gradient-to-r from-brandRed via-red-400 to-amber-500">JUICY.</span> <br>UNFORGETTABLE.
-                    </h1>
-                    <p class="text-gray-400 text-sm sm:text-base mb-8 max-w-lg leading-relaxed">
-                        Welcome to Grill & Chill - The Burger Lab. Experience 100% prime beef smash patties, artisanal melted gourmet cheeses, secret signature lab sauces, and fresh baked brioche buns.
-                    </p>
-                    
-                    <div class="flex flex-wrap gap-4 items-center">
-                        <a href="#menu" class="bg-brandRed hover:bg-brandRedDark text-white font-bold px-7 py-3.5 rounded-xl shadow-lg glow-red transition-all flex items-center gap-2 text-sm uppercase">
-                            <i class="fa-solid fa-utensils"></i> Explore Menu
-                        </a>
-                        <a href="#burger-builder" class="bg-brandCard hover:bg-gray-800 text-white font-bold px-7 py-3.5 rounded-xl border border-gray-700 hover:border-brandRed transition-all flex items-center gap-2 text-sm uppercase">
-                            <i class="fa-solid fa-sliders"></i> Customize Burger
-                        </a>
-                    </div>
+        <button className="relative bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-white px-4 py-2 rounded-xl flex items-center space-x-2 transition-all">
+          <ShoppingBag className="w-4 h-4 text-red-500" />
+          <span className="text-sm font-medium">Cart</span>
+          <span className="bg-red-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">2</span>
+        </button>
+      </header>
 
-                    <!-- Live Animated Statistics -->
-                    <div class="mt-12 pt-8 border-t border-gray-800 grid grid-cols-3 gap-6">
-                        <div>
-                            <p class="font-oswald text-3xl font-bold text-white"><span class="counter" data-target="100">0</span>%</p>
-                            <p class="text-xs text-gray-400">Fresh Beef Patty</p>
-                        </div>
-                        <div>
-                            <p class="font-oswald text-3xl font-bold text-brandRed"><span class="counter" data-target="30">0</span> Mins</p>
-                            <p class="text-xs text-gray-400">Express Delivery</p>
-                        </div>
-                        <div>
-                            <p class="font-oswald text-3xl font-bold text-white"><span class="counter" data-target="50">0</span>K+</p>
-                            <p class="text-xs text-gray-400">Happy Burger Lovers</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hero Render Burger Image -->
-                <div class="relative flex justify-center items-center" data-aos="zoom-in">
-                    <div class="absolute w-80 h-80 bg-brandRed/20 rounded-full blur-3xl pointer-events-none"></div>
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800" alt="Gourmet Smash Burger" class="relative z-10 w-full max-w-md rounded-3xl shadow-2xl border-2 border-gray-800 animate-float object-cover h-[420px]">
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Hot Deals Section with Dynamic Timer -->
-    <section id="deals" class="py-16 bg-brandCard/40 border-y border-gray-800/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                <div>
-                    <span class="text-brandRed font-bold text-xs uppercase tracking-wider">Limited Time Offers</span>
-                    <h2 class="text-3xl sm:text-5xl font-bold uppercase text-white mt-1">LOCKED & LOADED DEALS</h2>
-                </div>
-                <!-- Dynamic Live Countdown Timer -->
-                <div class="bg-brandDark border border-brandRed/50 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-lg">
-                    <span class="text-xs uppercase text-gray-400 font-bold">Deal Ends In:</span>
-                    <div id="countdown-timer" class="font-oswald text-2xl font-bold text-brandRed tracking-widest">
-                        00h : 00m : 00s
-                    </div>
-                </div>
-            </div>
-
-            <!-- Deals Grid with Image Hover Details -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <!-- Deal Item 1 -->
-                <div class="glass-card rounded-2xl overflow-hidden hover:border-brandRed transition-all group flex flex-col justify-between" data-aos="fade-up">
-                    <div class="relative overflow-hidden h-56">
-                        <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <span class="absolute top-3 right-3 bg-brandRed text-white text-xs font-bold px-3 py-1 rounded-full uppercase z-10">Save 30%</span>
-                        <!-- Hover Overlay Detail -->
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                            <h4 class="font-oswald text-xl font-bold text-brandRed mb-2">DUO CRUNCH BOX</h4>
-                            <p class="text-xs text-gray-300 leading-relaxed">Includes 2x Double Beef Smash Cheeseburgers, 1x Large Lab Seasoned Fries, 2x Cold Beverages & Sauce Dip.</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-oswald text-2xl font-bold text-white">DUO CRUNCH BOX</h3>
-                        <p class="text-gray-400 text-xs mt-1">2x Double Smash Cheeseburgers + Large Fries + 2 Drinks</p>
-                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-800">
-                            <div>
-                                <span class="line-through text-gray-500 text-xs">Rs. 1,890</span>
-                                <span class="text-2xl font-bold text-brandRed font-oswald ml-2">Rs. 1,350</span>
-                            </div>
-                            <button onclick="addToCart('Duo Crunch Box', 1350, 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600')" class="bg-brandRed hover:bg-brandRedDark text-white p-3 rounded-xl transition-all glow-red-sm">
-                                <i class="fa-solid fa-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Deal Item 2 -->
-                <div class="glass-card rounded-2xl overflow-hidden hover:border-brandRed transition-all group flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
-                    <div class="relative overflow-hidden h-56">
-                        <img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <span class="absolute top-3 right-3 bg-brandRed text-white text-xs font-bold px-3 py-1 rounded-full uppercase z-10">Bestseller</span>
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                            <h4 class="font-oswald text-xl font-bold text-brandRed mb-2">TRIPLE TOWER PARTY</h4>
-                            <p class="text-xs text-gray-300 leading-relaxed">3x Crispy Zinger Burgers, 12x Gourmet Crispy Wings, 2x Fries & 3x Secret Sauces.</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-oswald text-2xl font-bold text-white">TRIPLE TOWER PARTY</h3>
-                        <p class="text-gray-400 text-xs mt-1">3x Zinger Crispy Burgers + 12x Chicken Wings + Sauce Trio</p>
-                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-800">
-                            <div>
-                                <span class="line-through text-gray-500 text-xs">Rs. 2,600</span>
-                                <span class="text-2xl font-bold text-brandRed font-oswald ml-2">Rs. 1,990</span>
-                            </div>
-                            <button onclick="addToCart('Triple Tower Party', 1990, 'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600')" class="bg-brandRed hover:bg-brandRedDark text-white p-3 rounded-xl transition-all glow-red-sm">
-                                <i class="fa-solid fa-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Deal Item 3 -->
-                <div class="glass-card rounded-2xl overflow-hidden hover:border-brandRed transition-all group flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
-                    <div class="relative overflow-hidden h-56">
-                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <span class="absolute top-3 right-3 bg-brandRed text-white text-xs font-bold px-3 py-1 rounded-full uppercase z-10">Solo Feast</span>
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                            <h4 class="font-oswald text-xl font-bold text-brandRed mb-2">SOLO LAB OVERLOAD</h4>
-                            <p class="text-xs text-gray-300 leading-relaxed">1x Quad Smash Beef Burger, Loaded Chili Cheese Fries & 1x Drink.</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-oswald text-2xl font-bold text-white">SOLO LAB OVERLOAD</h3>
-                        <p class="text-gray-400 text-xs mt-1">1x Quad Smash Gourmet Beef + Chili Cheese Fries + Drink</p>
-                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-800">
-                            <div>
-                                <span class="line-through text-gray-500 text-xs">Rs. 1,450</span>
-                                <span class="text-2xl font-bold text-brandRed font-oswald ml-2">Rs. 1,150</span>
-                            </div>
-                            <button onclick="addToCart('Solo Lab Overload', 1150, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600')" class="bg-brandRed hover:bg-brandRedDark text-white p-3 rounded-xl transition-all glow-red-sm">
-                                <i class="fa-solid fa-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Menu Section (14 Expanded Categories) -->
-    <section id="menu" class="py-20 bg-brandDark">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-10">
-                <span class="text-brandRed font-bold text-xs uppercase tracking-wider">Fresh From The Grill</span>
-                <h2 class="text-3xl sm:text-5xl font-bold uppercase text-white mt-1">THE BURGER LAB MENU</h2>
-                <div class="w-16 h-1 bg-brandRed mx-auto mt-4 rounded-full"></div>
-            </div>
-
-            <!-- 14 Interactive Category Filter Tabs -->
-            <div class="flex flex-wrap justify-center gap-2 mb-12">
-                <button onclick="filterMenu('all')" class="menu-tab active bg-brandRed text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all">All Items</button>
-                <button onclick="filterMenu('beef-smash')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Beef Smash</button>
-                <button onclick="filterMenu('crispy-chicken')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Crispy Chicken</button>
-                <button onclick="filterMenu('grilled-chicken')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Grilled Chicken</button>
-                <button onclick="filterMenu('double-decker')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Double Decker</button>
-                <button onclick="filterMenu('quad-smash')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Quad Smash</button>
-                <button onclick="filterMenu('loaded-fries')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Loaded Fries</button>
-                <button onclick="filterMenu('gourmet-sides')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Gourmet Sides</button>
-                <button onclick="filterMenu('secret-sauces')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Secret Sauces</button>
-                <button onclick="filterMenu('kids-meal')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Kids Meal</button>
-                <button onclick="filterMenu('drinks')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Ice Cold Drinks</button>
-                <button onclick="filterMenu('milkshakes')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Milkshakes</button>
-                <button onclick="filterMenu('desserts')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Desserts</button>
-                <button onclick="filterMenu('family-deals')" class="menu-tab bg-brandCard text-gray-300 hover:text-white px-4 py-2 rounded-xl font-bold text-xs uppercase transition-all border border-gray-800">Family Deals</button>
-            </div>
-
-            <!-- Menu Cards Grid -->
-            <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Item 1 -->
-                <div class="menu-card beef-smash double-decker glass-card rounded-2xl overflow-hidden hover:border-brandRed transition-all flex flex-col justify-between" data-aos="fade-up">
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-oswald text-2xl font-bold text-white">DOUBLE ANGUS SMASH</h3>
-                        <p class="text-gray-400 text-xs mt-2 leading-relaxed">Twin 100% Angus beef patties smashed thin with melted cheddar & caramelised onions.</p>
-                        <div class="flex justify-between items-center mt-6">
-                            <span class="text-2xl font-bold text-brandRed font-oswald">Rs. 890</span>
-                            <button onclick="addToCart('Double Angus Smash', 890, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600')" class="bg-brandRed hover:bg-brandRedDark text-white px-4 py-2 rounded-xl font-bold text-xs uppercase">Add</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Item 2 -->
-                <div class="menu-card crispy-chicken glass-card rounded-2xl overflow-hidden hover:border-brandRed transition-all flex flex-col justify-between" data-aos="fade-up">
-                    <img src="https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?w=600" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-oswald text-2xl font-bold text-white">FIREHOUSE ZINGER</h3>
-                        <p class="text-gray-400 text-xs mt-2 leading-relaxed">Extra crispy buttermilk fried chicken thigh, spicy jalapeños, red slaw & sriracha mayo.</p>
-                        <div class="flex justify-between items-center mt-6">
-                            <span class="text-2xl font-bold text-brandRed font-oswald">Rs. 750</span>
-                            <button onclick="addToCart('Firehouse Zinger', 750, 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?w=600')" class="bg-brandRed hover:bg-brandRedDark text-white px-4 py-2 rounded-xl font-bold text-xs uppercase">Add</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Item 3 -->
-                <div class="menu-card loaded-fries glass-card rounded-2xl overflow-hidden hover:border-brandRed transition-all flex flex-col justify-between" data-aos="fade-up">
-                    <img src="https://images.unsplash.com/photo-1576107232684-1279f3908594?w=600" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-oswald text-2xl font-bold text-white">CHILI CHEESE FRIES</h3>
-                        <p class="text-gray-400 text-xs mt-2 leading-relaxed">Skin-on fries smothered in liquid cheddar, minced beef chili & chopped jalapeños.</p>
-                        <div class="flex justify-between items-center mt-6">
-                            <span class="text-2xl font-bold text-brandRed font-oswald">Rs. 490</span>
-                            <button onclick="addToCart('Chili Cheese Fries', 490, 'https://images.unsplash.com/photo-1576107232684-1279f3908594?w=600')" class="bg-brandRed hover:bg-brandRedDark text-white px-4 py-2 rounded-xl font-bold text-xs uppercase">Add</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Custom Burger Builder (Fixed Spacing Layout Bug) -->
-    <section id="burger-builder" class="py-20 bg-brandCard/30 border-y border-gray-800 relative overflow-visible">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-brandRed font-bold text-xs uppercase tracking-wider"><i class="fa-solid fa-flask mr-1"></i> Customizer Engine</span>
-                <h2 class="text-3xl sm:text-5xl font-bold uppercase text-white mt-1">BUILD YOUR OWN BURGER</h2>
-                <p class="text-gray-400 text-xs mt-2">Design your burger patty by patty. Live real-time visual stack update!</p>
-            </div>
-
-            <!-- Main Layout Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                <!-- Controls Side (Left - 7 Cols) -->
-                <div class="lg:col-span-7 bg-brandDark p-6 sm:p-8 rounded-2xl border border-gray-800 space-y-6">
-                    
-                    <!-- 1. Bun -->
-                    <div>
-                        <label class="block font-oswald text-base font-bold text-white mb-3 uppercase">1. Choose Bun</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <button onclick="selectBun('Brioche Bun', 120, this)" class="bun-btn active bg-brandCard p-3 rounded-xl border border-brandRed text-left transition-all">
-                                <p class="font-bold text-xs text-white">Brioche Bun</p>
-                                <p class="text-[11px] text-brandRed font-bold mt-1">+Rs. 120</p>
-                            </button>
-                            <button onclick="selectBun('Sesame Bun', 90, this)" class="bun-btn bg-brandCard p-3 rounded-xl border border-gray-800 text-left transition-all">
-                                <p class="font-bold text-xs text-white">Sesame Bun</p>
-                                <p class="text-[11px] text-brandRed font-bold mt-1">+Rs. 90</p>
-                            </button>
-                            <button onclick="selectBun('Potato Bun', 110, this)" class="bun-btn bg-brandCard p-3 rounded-xl border border-gray-800 text-left transition-all">
-                                <p class="font-bold text-xs text-white">Potato Bun</p>
-                                <p class="text-[11px] text-brandRed font-bold mt-1">+Rs. 110</p>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 2. Patty -->
-                    <div>
-                        <label class="block font-oswald text-base font-bold text-white mb-3 uppercase">2. Select Patty Type</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <button onclick="selectPatty('Angus Beef', 350, this)" class="patty-btn active bg-brandCard p-3 rounded-xl border border-brandRed text-left transition-all">
-                                <p class="font-bold text-xs text-white">Angus Beef</p>
-                                <p class="text-[11px] text-brandRed font-bold mt-1">+Rs. 350</p>
-                            </button>
-                            <button onclick="selectPatty('Crispy Zinger', 280, this)" class="patty-btn bg-brandCard p-3 rounded-xl border border-gray-800 text-left transition-all">
-                                <p class="font-bold text-xs text-white">Crispy Zinger</p>
-                                <p class="text-[11px] text-brandRed font-bold mt-1">+Rs. 280</p>
-                            </button>
-                            <button onclick="selectPatty('Grilled Chicken', 290, this)" class="patty-btn bg-brandCard p-3 rounded-xl border border-gray-800 text-left transition-all">
-                                <p class="font-bold text-xs text-white">Grilled Chicken</p>
-                                <p class="text-[11px] text-brandRed font-bold mt-1">+Rs. 290</p>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 3. Patty Count -->
-                    <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="font-oswald text-base font-bold text-white uppercase">3. Patty Count</label>
-                            <span id="patty-count-display" class="text-brandRed font-bold text-sm">1 Patty</span>
-                        </div>
-                        <input id="patty-slider" type="range" min="1" max="4" value="1" oninput="updatePattyCount(this.value)" class="w-full accent-brandRed bg-gray-800 h-2 rounded-lg cursor-pointer">
-                    </div>
-
-                    <!-- 4. Toppings -->
-                    <div>
-                        <label class="block font-oswald text-base font-bold text-white mb-3 uppercase">4. Add Toppings & Cheese</label>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <label class="flex items-center gap-2 bg-brandCard p-3 rounded-xl border border-gray-800 cursor-pointer">
-                                <input type="checkbox" onchange="toggleTopping('Cheddar Cheese', 80, this)" class="accent-brandRed w-4 h-4">
-                                <span class="text-xs text-white">Cheddar (+Rs.80)</span>
-                            </label>
-                            <label class="flex items-center gap-2 bg-brandCard p-3 rounded-xl border border-gray-800 cursor-pointer">
-                                <input type="checkbox" onchange="toggleTopping('Turkey Bacon', 120, this)" class="accent-brandRed w-4 h-4">
-                                <span class="text-xs text-white">Bacon (+Rs.120)</span>
-                            </label>
-                            <label class="flex items-center gap-2 bg-brandCard p-3 rounded-xl border border-gray-800 cursor-pointer">
-                                <input type="checkbox" onchange="toggleTopping('Jalapeños', 40, this)" class="accent-brandRed w-4 h-4">
-                                <span class="text-xs text-white">Jalapeños (+Rs.40)</span>
-                            </label>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Live Visualizer Side (Right - 5 Cols) -->
-                <div class="lg:col-span-5 bg-brandDark p-6 rounded-2xl border border-gray-800 flex flex-col justify-between items-center sticky top-24 min-h-[480px]">
-                    <h3 class="font-oswald text-lg font-bold text-brandRed uppercase tracking-wider mb-4"><i class="fa-solid fa-eye mr-2"></i> Live Burger Preview</h3>
-
-                    <!-- Visual Burger Stack Display Container -->
-                    <div id="burger-visual-stack" class="w-full flex flex-col items-center justify-center my-auto py-6 space-y-1">
-                        <!-- Dynamic SVG / CSS Stack Layers rendered here -->
-                    </div>
-
-                    <div class="w-full border-t border-gray-800 pt-4 mt-4 flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] text-gray-400 block uppercase font-bold">Total Custom Price</span>
-                            <span id="custom-price-display" class="font-oswald text-3xl font-bold text-brandRed">Rs. 510</span>
-                        </div>
-                        <button onclick="addCustomBurgerToCart()" class="bg-brandRed hover:bg-brandRedDark text-white px-6 py-3 rounded-xl font-bold text-xs uppercase shadow-lg glow-red-sm flex items-center gap-2">
-                            <i class="fa-solid fa-cart-plus"></i> Add To Cart
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Master Chefs Section with Image Hover Details -->
-    <section id="chefs" class="py-20 bg-brandDark">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-brandRed font-bold text-xs uppercase tracking-wider">Culinary Experts</span>
-                <h2 class="text-3xl sm:text-5xl font-bold uppercase text-white mt-1">MEET OUR MASTER CHEFS</h2>
-                <div class="w-16 h-1 bg-brandRed mx-auto mt-4 rounded-full"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Chef 1 -->
-                <div class="glass-card rounded-2xl overflow-hidden group relative" data-aos="fade-up">
-                    <div class="h-80 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <!-- Hover Overlay Detail -->
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <h3 class="font-oswald text-2xl font-bold text-white mb-1">MARCO ROSSI</h3>
-                            <p class="text-brandRed text-xs font-bold uppercase mb-4">Head Grill Master</p>
-                            <p class="text-xs text-gray-300 leading-relaxed">15+ years perfecting smash patty crusts and precision heat searing techniques across European burger hubs.</p>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-oswald text-xl font-bold text-white">MARCO ROSSI</h3>
-                        <p class="text-brandRed text-xs font-semibold uppercase mt-1">Head Grill Master</p>
-                    </div>
-                </div>
-
-                <!-- Chef 2 -->
-                <div class="glass-card rounded-2xl overflow-hidden group relative" data-aos="fade-up" data-aos-delay="100">
-                    <div class="h-80 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <h3 class="font-oswald text-2xl font-bold text-white mb-1">SARAH KHAN</h3>
-                            <p class="text-brandRed text-xs font-bold uppercase mb-4">Sauce Specialist</p>
-                            <p class="text-xs text-gray-300 leading-relaxed">The culinary scientist behind our proprietary Secret Lab Sauce and spicy Firehouse Sriracha Mayo blend.</p>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-oswald text-xl font-bold text-white">SARAH KHAN</h3>
-                        <p class="text-brandRed text-xs font-semibold uppercase mt-1">Sauce Specialist</p>
-                    </div>
-                </div>
-
-                <!-- Chef 3 -->
-                <div class="glass-card rounded-2xl overflow-hidden group relative" data-aos="fade-up" data-aos-delay="200">
-                    <div class="h-80 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <h3 class="font-oswald text-2xl font-bold text-white mb-1">ALEX TANAKA</h3>
-                            <p class="text-brandRed text-xs font-bold uppercase mb-4">Artisanal Baker</p>
-                            <p class="text-xs text-gray-300 leading-relaxed">Crafts ultra-soft, freshly baked potato and golden brioche buns daily for all our branches.</p>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-oswald text-xl font-bold text-white">ALEX TANAKA</h3>
-                        <p class="text-brandRed text-xs font-semibold uppercase mt-1">Artisanal Baker</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Branches Section with Image Hover Details & Deals -->
-    <section id="branches" class="py-20 bg-brandCard/30 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-brandRed font-bold text-xs uppercase tracking-wider">Locate Us</span>
-                <h2 class="text-3xl sm:text-5xl font-bold uppercase text-white mt-1">OUR LAB BRANCHES</h2>
-                <div class="w-16 h-1 bg-brandRed mx-auto mt-4 rounded-full"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Branch 1 -->
-                <div class="glass-card rounded-2xl overflow-hidden group relative" data-aos="fade-up">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <!-- Hover Overlay with Exclusive Branch Deal -->
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-brandRed text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase mb-2">Branch Deal</span>
-                            <h4 class="font-oswald text-lg font-bold text-white">GULSHAN MIDNIGHT SPECIAL</h4>
-                            <p class="text-xs text-gray-300 mt-1">Get 20% OFF on Dine-in after 11 PM!</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-oswald text-xl font-bold text-white">GULSHAN BRANCH</h3>
-                        <p class="text-gray-400 text-xs mt-1">Main University Road, Karachi, Pakistan</p>
-                        <p class="text-brandRed font-bold text-xs mt-3"><i class="fa-solid fa-phone mr-1"></i> (021) 111-287-437</p>
-                    </div>
-                </div>
-
-                <!-- Branch 2 -->
-                <div class="glass-card rounded-2xl overflow-hidden group relative" data-aos="fade-up" data-aos-delay="100">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-brandRed text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase mb-2">Branch Deal</span>
-                            <h4 class="font-oswald text-lg font-bold text-white">DHA SEHER COMBO</h4>
-                            <p class="text-xs text-gray-300 mt-1">Free Extra Sauce Dip with every Double Smash!</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-oswald text-xl font-bold text-white">DHA PHASE 6</h3>
-                        <p class="text-gray-400 text-xs mt-1">Khayaban-e-Seher, Karachi, Pakistan</p>
-                        <p class="text-brandRed font-bold text-xs mt-3"><i class="fa-solid fa-phone mr-1"></i> (021) 111-287-438</p>
-                    </div>
-                </div>
-
-                <!-- Branch 3 -->
-                <div class="glass-card rounded-2xl overflow-hidden group relative" data-aos="fade-up" data-aos-delay="200">
-                    <div class="h-56 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-brandDark/90 p-6 flex flex-col justify-center items-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-brandRed text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase mb-2">Branch Deal</span>
-                            <h4 class="font-oswald text-lg font-bold text-white">MM ALAM WEEKEND PARTY</h4>
-                            <p class="text-xs text-gray-300 mt-1">Buy 2 Burgers Get 1 Loaded Fries Free!</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-oswald text-xl font-bold text-white">MM ALAM ROAD</h3>
-                        <p class="text-gray-400 text-xs mt-1">Gulberg III, Lahore, Pakistan</p>
-                        <p class="text-brandRed font-bold text-xs mt-3"><i class="fa-solid fa-phone mr-1"></i> (042) 111-287-439</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Modern Footer -->
-    <footer class="bg-brandCard border-t border-gray-800 text-gray-400 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-                <div class="flex items-center gap-2 mb-4">
-                    <div class="w-8 h-8 rounded-lg bg-brandRed flex items-center justify-center text-white font-bold text-sm">
-                        <i class="fa-solid fa-burger"></i>
-                    </div>
-                    <span class="font-oswald text-xl font-bold text-white">GRILL & CHILL</span>
-                </div>
-                <p class="text-xs leading-relaxed text-gray-500">Crafting high-octane gourmet smash burgers with scientific precision and unmatched fresh flavors.</p>
-            </div>
-
-            <div>
-                <h4 class="font-oswald text-white font-bold text-sm mb-4 uppercase">Navigation</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a href="#hero" class="hover:text-brandRed transition-colors">Home</a></li>
-                    <li><a href="#deals" class="hover:text-brandRed transition-colors">Hot Deals</a></li>
-                    <li><a href="#menu" class="hover:text-brandRed transition-colors">Menu</a></li>
-                    <li><a href="#burger-builder" class="hover:text-brandRed transition-colors">Custom Burger Lab</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-oswald text-white font-bold text-sm mb-4 uppercase">Lab Timings</h4>
-                <p class="text-xs">Monday - Thursday: 12:00 PM - 01:00 AM</p>
-                <p class="text-xs mt-2">Friday - Sunday: 12:00 PM - 03:00 AM</p>
-            </div>
-
-            <div>
-                <h4 class="font-oswald text-white font-bold text-sm mb-4 uppercase">Social Links</h4>
-                <div class="flex gap-3 text-sm">
-                    <a href="#" class="w-9 h-9 rounded-xl bg-brandDark flex items-center justify-center hover:bg-brandRed hover:text-white transition-colors border border-gray-800"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="w-9 h-9 rounded-xl bg-brandDark flex items-center justify-center hover:bg-brandRed hover:text-white transition-colors border border-gray-800"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="w-9 h-9 rounded-xl bg-brandDark flex items-center justify-center hover:bg-brandRed hover:text-white transition-colors border border-gray-800"><i class="fa-brands fa-tiktok"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="border-t border-gray-800/80 mt-12 pt-6 text-center text-xs text-gray-600">
-            © 2026 GRILL & CHILL - The Burger Lab. All Rights Reserved.
-        </div>
-    </footer>
-
-    <!-- Cart Drawer -->
-    <div id="cart-drawer-overlay" onclick="toggleCartDrawer()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity"></div>
-    <div id="cart-drawer" class="fixed top-0 right-0 w-full sm:w-96 h-full bg-brandDark z-50 shadow-2xl border-l border-gray-800 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
-        
-        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-            <h3 class="font-oswald text-2xl font-bold text-white uppercase"><i class="fa-solid fa-bag-shopping text-brandRed mr-2"></i> Your Order</h3>
-            <button onclick="toggleCartDrawer()" class="text-gray-400 hover:text-white text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-12">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="inline-flex items-center space-x-2 bg-red-950/60 border border-red-800/40 text-red-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-4">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Interactive Customizer</span>
+          </span>
+          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Craft Your Masterpiece</h2>
+          <p className="text-neutral-400 mt-3 text-sm md:text-base">
+            Design your burger patty by patty with real-time visual ingredients and dynamic pricing.
+          </p>
         </div>
 
-        <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4">
-            <div id="empty-cart-msg" class="text-center text-gray-500 py-12">
-                <i class="fa-solid fa-cart-flatbed text-4xl mb-3 block"></i>
-                Your cart is currently empty.
-            </div>
-        </div>
-
-        <div class="p-6 border-t border-gray-800 bg-brandCard space-y-4">
-            <div class="flex justify-between text-xs text-gray-300">
-                <span>Subtotal</span>
-                <span id="cart-subtotal" class="font-bold text-white">Rs. 0</span>
-            </div>
-            <div class="flex justify-between text-xs text-gray-300">
-                <span>Delivery Fee</span>
-                <span class="text-brandRed font-bold">Rs. 150</span>
-            </div>
-            <div class="flex justify-between text-white font-oswald text-xl font-bold border-t border-gray-800 pt-3">
-                <span>TOTAL</span>
-                <span id="cart-total" class="text-brandRed">Rs. 150</span>
-            </div>
-            <button onclick="openCheckoutModal()" class="w-full bg-brandRed hover:bg-brandRedDark text-white py-3 rounded-xl font-bold text-xs uppercase shadow-lg glow-red">
-                Proceed To Checkout <i class="fa-solid fa-arrow-right ml-1"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Checkout Modal with SweetAlert Validation Enforcement -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
-        <div class="bg-brandDark border border-gray-800 w-full max-w-lg rounded-2xl p-6 sm:p-8 relative shadow-2xl">
-            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <h3 class="font-oswald text-2xl font-bold text-white uppercase mb-1">DELIVERY DETAILS</h3>
-            <p class="text-gray-400 text-xs mb-6">Complete your info below to place order.</p>
-
-            <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Full Name</label>
-                    <input id="input-name" type="text" required placeholder="John Doe" class="w-full bg-brandCard text-white border border-gray-800 rounded-xl p-3 text-xs focus:outline-none focus:border-brandRed">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Phone Number (Numbers Only)</label>
-                    <!-- Numeric input restriction -->
-                    <input id="input-phone" type="text" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required placeholder="03001234567" class="w-full bg-brandCard text-white border border-gray-800 rounded-xl p-3 text-xs focus:outline-none focus:border-brandRed">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1">Delivery Address</label>
-                    <textarea id="input-address" required rows="3" placeholder="House #, Street, Area, City" class="w-full bg-brandCard text-white border border-gray-800 rounded-xl p-3 text-xs focus:outline-none focus:border-brandRed"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-brandRed hover:bg-brandRedDark text-white font-bold py-3.5 rounded-xl shadow-lg glow-red text-xs uppercase mt-4">
-                    Confirm & Place Order
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- AOS Script -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    <script>
-        AOS.init({ duration: 800, once: true });
-
-        /* Live Working Countdown Timer */
-        let totalSeconds = 5 * 3600 + 42 * 60 + 19;
-        const timerElement = document.getElementById('countdown-timer');
-
-        setInterval(() => {
-            if (totalSeconds > 0) {
-                totalSeconds--;
-                const hrs = Math.floor(totalSeconds / 3600);
-                const mins = Math.floor((totalSeconds % 3600) / 60);
-                const secs = totalSeconds % 60;
-                timerElement.innerText = `${String(hrs).padStart(2, '0')}h : ${String(mins).padStart(2, '0')}m : ${String(secs).padStart(2, '0')}s`;
-            }
-        }, 1000);
-
-        /* Statistics Counter Animation */
-        const counters = document.querySelectorAll('.counter');
-        counters.forEach(counter => {
-            const target = +counter.getAttribute('data-target');
-            let count = 0;
-            const inc = target / 100;
-            const updateCount = () => {
-                count += inc;
-                if (count < target) {
-                    counter.innerText = Math.ceil(count);
-                    setTimeout(updateCount, 25);
-                } else {
-                    counter.innerText = target;
-                }
-            };
-            updateCount();
-        });
-
-        /* Cart Systems with SweetAlert Popups */
-        let cart = [];
-
-        function toggleCartDrawer() {
-            const drawer = document.getElementById('cart-drawer');
-            const overlay = document.getElementById('cart-drawer-overlay');
-            if (drawer.classList.contains('translate-x-full')) {
-                drawer.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-            } else {
-                drawer.classList.add('translate-x-full');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            }
-        }
-
-        function addToCart(name, price, image) {
-            const existingIndex = cart.findIndex(i => i.name === name);
-            if (existingIndex > -1) {
-                cart[existingIndex].qty += 1;
-            } else {
-                cart.push({ name, price, image, qty: 1 });
-            }
-            updateCartUI();
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Customization Options */}
+          <div className="lg:col-span-7 space-y-8 bg-neutral-900/40 border border-neutral-800/80 p-6 md:p-8 rounded-3xl backdrop-blur-sm">
             
-            // SweetAlert Popup instead of normal alert
-            Swal.fire({
-                title: 'Added To Cart!',
-                text: `${name} has been added to your burger lab order.`,
-                icon: 'success',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                background: '#18181c',
-                color: '#fff',
-                iconColor: '#E63946'
-            });
-        }
+            {/* Step 1: Bun Selection */}
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">1</span>
+                <h3 className="text-base font-bold text-white">Choose Bun</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {Buns.map((bun) => (
+                  <button
+                    key={bun.id}
+                    onClick={() => setSelectedBun(bun)}
+                    className={`text-left p-4 rounded-2xl border transition-all ${
+                      selectedBun.id === bun.id
+                        ? 'bg-neutral-800 border-red-500 text-white shadow-lg shadow-red-500/10'
+                        : 'bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700'
+                    }`}
+                  >
+                    <div className="font-semibold text-sm text-white">{bun.name}</div>
+                    <div className="text-xs text-neutral-500 mt-1">{bun.description}</div>
+                    <div className="text-xs font-bold text-red-400 mt-3">+Rs. {bun.price}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        function updateCartQty(index, delta) {
-            cart[index].qty += delta;
-            if (cart[index].qty <= 0) cart.splice(index, 1);
-            updateCartUI();
-        }
+            {/* Step 2: Patty Selection */}
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">2</span>
+                <h3 className="text-base font-bold text-white">Select Patty Type</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {Patties.map((patty) => (
+                  <button
+                    key={patty.id}
+                    onClick={() => setSelectedPatty(patty)}
+                    className={`text-left p-4 rounded-2xl border transition-all ${
+                      selectedPatty.id === patty.id
+                        ? 'bg-neutral-800 border-red-500 text-white shadow-lg shadow-red-500/10'
+                        : 'bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700'
+                    }`}
+                  >
+                    <div className="font-semibold text-sm text-white">{patty.name}</div>
+                    <div className="text-xs text-neutral-500 mt-1">{patty.description}</div>
+                    <div className="text-xs font-bold text-red-400 mt-3">+Rs. {patty.price}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        function updateCartUI() {
-            const container = document.getElementById('cart-items-container');
-            const counter = document.getElementById('cart-counter');
-            const subtotalEl = document.getElementById('cart-subtotal');
-            const totalEl = document.getElementById('cart-total');
+            {/* Step 3: Patty Count Slider */}
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center space-x-3">
+                  <span className="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">3</span>
+                  <h3 className="text-base font-bold text-white">Patty Count</h3>
+                </div>
+                <span className="text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded-full">
+                  {pattyCount} {pattyCount === 1 ? 'Patty' : 'Patties'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="4"
+                value={pattyCount}
+                onChange={(e) => setPattyCount(parseInt(e.target.value))}
+                className="w-full accent-red-500 h-2 bg-neutral-800 rounded-lg cursor-pointer"
+              />
+            </div>
 
-            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            counter.innerText = totalCount;
+            {/* Step 4: Toppings */}
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">4</span>
+                <h3 className="text-base font-bold text-white">Toppings & Sauces</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {Toppings.map((topping) => {
+                  const isChecked = selectedToppings.includes(topping.id);
+                  return (
+                    <button
+                      key={topping.id}
+                      onClick={() => toggleTopping(topping.id)}
+                      className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all ${
+                        isChecked
+                          ? 'bg-neutral-800 border-red-500/60 text-white'
+                          : 'bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <CheckCircle2 className={`w-4 h-4 ${isChecked ? 'text-red-500' : 'text-neutral-600'}`} />
+                        <span className="text-xs font-medium text-white">{topping.name}</span>
+                      </div>
+                      <span className="text-xs font-bold text-neutral-400">+Rs. {topping.price}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div id="empty-cart-msg" class="text-center text-gray-500 py-12">
-                        <i class="fa-solid fa-cart-flatbed text-4xl mb-3 block"></i>
-                        Your cart is currently empty.
-                    </div>`;
-                subtotalEl.innerText = "Rs. 0";
-                totalEl.innerText = "Rs. 150";
-                return;
-            }
+          </div>
 
-            let html = '';
-            let subtotal = 0;
-            cart.forEach((item, index) => {
-                subtotal += item.price * item.qty;
-                html += `
-                    <div class="flex items-center justify-between bg-brandCard p-3 rounded-xl border border-gray-800">
-                        <div class="flex items-center gap-3">
-                            ${item.image ? `<img src="${item.image}" class="w-10 h-10 rounded-lg object-cover">` : '<div class="w-10 h-10 rounded-lg bg-brandRed/20 flex items-center justify-center text-brandRed font-bold"><i class="fa-solid fa-burger"></i></div>'}
-                            <div>
-                                <h4 class="font-bold text-xs text-white">${item.name}</h4>
-                                <span class="text-brandRed font-bold text-xs">Rs. ${item.price}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 bg-brandDark border border-gray-800 px-2 py-1 rounded-lg">
-                            <button onclick="updateCartQty(${index}, -1)" class="text-gray-400 hover:text-white text-xs px-1">-</button>
-                            <span class="text-xs font-bold text-white px-1">${item.qty}</span>
-                            <button onclick="updateCartQty(${index}, 1)" class="text-gray-400 hover:text-white text-xs px-1">+</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-            subtotalEl.innerText = `Rs. ${subtotal}`;
-            totalEl.innerText = `Rs. ${subtotal + 150}`;
-        }
+          {/* Real-time Preview & Cart Summary */}
+          <div className="lg:col-span-5 sticky top-28 bg-neutral-900/60 border border-neutral-800 p-6 md:p-8 rounded-3xl backdrop-blur-md space-y-6">
+            <div className="text-center border-b border-neutral-800 pb-4">
+              <span className="text-[11px] font-bold text-red-500 uppercase tracking-widest">Live Preview</span>
+              <h3 className="text-xl font-extrabold text-white mt-1">Your Custom Creation</h3>
+            </div>
 
-        /* 14 Category Menu Filter */
-        function filterMenu(category) {
-            document.querySelectorAll('.menu-tab').forEach(btn => {
-                btn.classList.remove('bg-brandRed', 'text-white');
-                btn.classList.add('bg-brandCard', 'text-gray-300');
-            });
-            event.target.classList.remove('bg-brandCard', 'text-gray-300');
-            event.target.classList.add('bg-brandRed', 'text-white');
+            {/* Burger Visual Stack */}
+            <div className="py-6 flex flex-col items-center justify-center space-y-1.5 min-h-[220px]">
+              {/* Top Bun */}
+              <div className="w-48 h-10 bg-amber-600 rounded-t-full border-b-2 border-amber-700 shadow-inner flex items-center justify-center text-[11px] font-bold text-amber-100">
+                {selectedBun.name} (Top)
+              </div>
 
-            document.querySelectorAll('.menu-card').forEach(item => {
-                if (category === 'all' || item.classList.contains(category)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
+              {/* Toppings Visuals */}
+              {selectedToppings.includes('sauce') && (
+                <div className="w-44 h-2 bg-red-500 rounded-full opacity-90 animate-pulse" />
+              )}
+              {selectedToppings.includes('cheddar') && (
+                <div className="w-46 h-2 bg-yellow-400 rounded-sm shadow-sm" />
+              )}
+              {selectedToppings.includes('jalapenos') && (
+                <div className="w-40 h-2 bg-emerald-600 rounded-full" />
+              )}
+              {selectedToppings.includes('bacon') && (
+                <div className="w-42 h-2.5 bg-red-900 rounded-sm" />
+              )}
 
-        /* Custom Burger Builder Visual Stack Engine */
-        let customBurger = {
-            bun: { name: 'Brioche Bun', price: 120 },
-            patty: { name: 'Angus Beef', price: 350 },
-            pattyCount: 1,
-            toppings: [],
-            sauce: { name: 'Secret Lab Sauce', price: 40 }
-        };
+              {/* Patties Visuals */}
+              {Array.from({ length: pattyCount }).map((_, i) => (
+                <div key={i} className="w-48 h-6 bg-amber-950 rounded-lg border-b border-amber-900 flex items-center justify-center text-[10px] font-semibold text-amber-200/80 shadow-md">
+                  {selectedPatty.name} #{i + 1}
+                </div>
+              ))}
 
-        function selectBun(name, price, el) {
-            customBurger.bun = { name, price };
-            document.querySelectorAll('.bun-btn').forEach(b => b.classList.remove('border-brandRed'));
-            el.classList.add('border-brandRed');
-            renderBurgerVisual();
-        }
+              {/* Bottom Bun */}
+              <div className="w-48 h-6 bg-amber-700 rounded-b-xl border-t border-amber-800 flex items-center justify-center text-[10px] font-bold text-amber-100">
+                {selectedBun.name} (Bottom)
+              </div>
+            </div>
 
-        function selectPatty(name, price, el) {
-            customBurger.patty = { name, price };
-            document.querySelectorAll('.patty-btn').forEach(b => b.classList.remove('border-brandRed'));
-            el.classList.add('border-brandRed');
-            renderBurgerVisual();
-        }
+            {/* Price & Checkout */}
+            <div className="pt-4 border-t border-neutral-800 space-y-4">
+              <div className="flex justify-between items-baseline">
+                <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Total Custom Price</span>
+                <div className="text-right">
+                  <span className="text-xs text-neutral-500 mr-1">PKR</span>
+                  <span className="text-3xl font-black text-white">Rs. {calculateTotal()}</span>
+                </div>
+              </div>
 
-        function updatePattyCount(val) {
-            customBurger.pattyCount = parseInt(val);
-            document.getElementById('patty-count-display').innerText = `${val} ${val > 1 ? 'Patties' : 'Patty'}`;
-            renderBurgerVisual();
-        }
-
-        function toggleTopping(name, price, checkbox) {
-            if (checkbox.checked) {
-                customBurger.toppings.push({ name, price });
-            } else {
-                customBurger.toppings = customBurger.toppings.filter(t => t.name !== name);
-            }
-            renderBurgerVisual();
-        }
-
-        function renderBurgerVisual() {
-            const stack = document.getElementById('burger-visual-stack');
-            let totalPrice = customBurger.bun.price + (customBurger.patty.price * customBurger.pattyCount) + customBurger.sauce.price;
-            customBurger.toppings.forEach(t => totalPrice += t.price);
-            document.getElementById('custom-price-display').innerText = `Rs. ${totalPrice}`;
-
-            let html = '';
-            // Top Bun
-            html += `<div class="w-48 h-10 bg-amber-600 rounded-t-full border-b-2 border-amber-800 text-[10px] text-center font-bold text-amber-100 flex items-center justify-center">${customBurger.bun.name}</div>`;
-            
-            // Toppings Layer
-            customBurger.toppings.forEach(t => {
-                html += `<div class="w-44 h-3 bg-emerald-500 rounded text-[8px] text-center font-bold text-white uppercase flex items-center justify-center">${t.name}</div>`;
-            });
-
-            // Patties Layer
-            for (let i = 0; i < customBurger.pattyCount; i++) {
-                html += `<div class="w-48 h-6 bg-amber-950 border border-stone-800 rounded-md text-[9px] text-center font-bold text-amber-200 flex items-center justify-center">${customBurger.patty.name}</div>`;
-            }
-
-            // Bottom Bun
-            html += `<div class="w-48 h-7 bg-amber-700 rounded-b-lg border-t-2 border-amber-800"></div>`;
-            stack.innerHTML = html;
-        }
-
-        function addCustomBurgerToCart() {
-            let totalPrice = customBurger.bun.price + (customBurger.patty.price * customBurger.pattyCount) + customBurger.sauce.price;
-            customBurger.toppings.forEach(t => totalPrice += t.price);
-            addToCart(`Custom ${customBurger.pattyCount}x ${customBurger.patty.name}`, totalPrice, null);
-        }
-
-        /* Checkout Modal & SweetAlert Integration */
-        function openCheckoutModal() {
-            if (cart.length === 0) {
-                Swal.fire({
-                    title: 'Cart is Empty!',
-                    text: 'Please add items to your cart before checking out.',
-                    icon: 'warning',
-                    background: '#18181c',
-                    color: '#fff',
-                    confirmButtonColor: '#E63946'
-                });
-                return;
-            }
-            toggleCartDrawer();
-            document.getElementById('checkout-modal').classList.remove('hidden');
-            document.getElementById('checkout-modal').classList.add('flex');
-        }
-
-        function closeCheckoutModal() {
-            document.getElementById('checkout-modal').classList.add('hidden');
-            document.getElementById('checkout-modal').classList.remove('flex');
-        }
-
-        function handleCheckoutSubmit(e) {
-            e.preventDefault();
-            const phoneVal = document.getElementById('input-phone').value;
-            
-            if (!/^\d+$/.test(phoneVal)) {
-                Swal.fire({
-                    title: 'Invalid Phone Number',
-                    text: 'Please enter numbers only for phone number field.',
-                    icon: 'error',
-                    background: '#18181c',
-                    color: '#fff',
-                    confirmButtonColor: '#E63946'
-                });
-                return;
-            }
-
-            closeCheckoutModal();
-            cart = [];
-            updateCartUI();
-
-            Swal.fire({
-                title: 'ORDER PLACED!',
-                text: 'Your burger lab order is being prepared fresh on the grill!',
-                icon: 'success',
-                background: '#18181c',
-                color: '#fff',
-                confirmButtonColor: '#E63946'
-            });
-        }
-
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-
-        renderBurgerVisual();
-    </script>
-</body>
-</html>
+              <button className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-xl shadow-red-600/20 transition-all hover:scale-[1.01] active:scale-[0.99]">
+                <span>Add to Cart</span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
