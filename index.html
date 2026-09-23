@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRILL & CHILL - The Burger Lab</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-neutral-950 text-neutral-100 selection:bg-red-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-red-600 via-orange-500 to-red-600 text-white text-xs font-semibold py-2 px-4 text-center tracking-wider uppercase shadow-md">
+    🚀 Free Express Delivery on orders over Rs. 1500 | Code: <span class="font-extrabold underline">GRILLNOW</span>
+  </div>
+
+  <!-- Modern Fixed Navbar (Clean & Classy) -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-neutral-950/80 border-b border-neutral-800/80 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-red-600/30">
+          G
+        </div>
+        <div>
+          <h1 class="font-black text-xl tracking-tight text-white leading-none">GRILL & CHILL</h1>
+          <span class="text-[9px] tracking-widest text-red-500 uppercase font-extrabold">The Burger Lab</span>
+        </div>
+      </div>
+
+      <!-- Clean Navigation Links -->
+      <nav class="hidden md:flex space-x-8 text-xs font-semibold tracking-wider uppercase text-neutral-400">
+        <a href="#home" class="hover:text-white transition-colors">Home</a>
+        <a href="#deals" class="hover:text-white transition-colors">Hot Deals</a>
+        <a href="#menu" class="hover:text-white transition-colors">Menu</a>
+        <a href="#builder" class="text-red-500 font-bold border-b-2 border-red-500 pb-1">Burger Lab</a>
+        <a href="#reviews" class="hover:text-white transition-colors">Reviews</a>
+        <a href="#branches" class="hover:text-white transition-colors">Branches</a>
+      </nav>
+
+      <!-- Cart Button (White Box Removed) -->
+      <div class="flex items-center space-x-4">
+        <button class="bg-neutral-900 border border-neutral-800 hover:border-red-500/50 text-white px-4 py-2.5 rounded-xl flex items-center space-x-2 transition-all">
+          <i data-lucide="shopping-bag" class="w-4 h-4 text-red-500"></i>
+          <span class="text-xs font-bold uppercase tracking-wider">Cart</span>
+          <span class="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">2</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Interactive Burger Lab Section -->
+  <main id="builder" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="inline-flex items-center space-x-2 bg-red-950/60 border border-red-800/40 text-red-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        <span>Interactive Customizer</span>
+      </span>
+      <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Craft Your Gourmet Burger</h2>
+      <p class="text-neutral-400 mt-3 text-sm">Select your premium buns, patties, and melted cheeses with live visual updates.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Customization Options -->
+      <div class="lg:col-span-7 space-y-8 bg-neutral-900/40 border border-neutral-800 p-6 md:p-8 rounded-3xl backdrop-blur-sm shadow-xl">
+        
+        <!-- Step 1: Bun Selection -->
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">1</span>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Choose Bun</h3>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button onclick="selectBun('Brioche', 120)" class="bun-btn active-option text-left p-4 rounded-2xl border bg-neutral-800 border-red-500 text-white shadow-lg shadow-red-500/10 transition-all">
+              <div class="font-semibold text-xs text-white">Artisanal Brioche</div>
+              <div class="text-[11px] text-neutral-500 mt-1">Soft & buttery</div>
+              <div class="text-xs font-bold text-red-400 mt-3">+Rs. 120</div>
+            </button>
+            <button onclick="selectBun('Sesame', 90)" class="bun-btn text-left p-4 rounded-2xl border bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700 transition-all">
+              <div class="font-semibold text-xs text-white">Classic Sesame</div>
+              <div class="text-[11px] text-neutral-500 mt-1">Toasted seeds</div>
+              <div class="text-xs font-bold text-red-400 mt-3">+Rs. 90</div>
+            </button>
+            <button onclick="selectBun('Potato', 110)" class="bun-btn text-left p-4 rounded-2xl border bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700 transition-all">
+              <div class="font-semibold text-xs text-white">Potato Bun</div>
+              <div class="text-[11px] text-neutral-500 mt-1">Pillow-soft</div>
+              <div class="text-xs font-bold text-red-400 mt-3">+Rs. 110</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Patty Selection -->
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">2</span>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Select Patty Type</h3>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button onclick="selectPatty('Smash Angus Beef', 350)" class="patty-btn active-option text-left p-4 rounded-2xl border bg-neutral-800 border-red-500 text-white shadow-lg shadow-red-500/10 transition-all">
+              <div class="font-semibold text-xs text-white">Smash Angus Beef</div>
+              <div class="text-[11px] text-neutral-500 mt-1">100% Prime beef</div>
+              <div class="text-xs font-bold text-red-400 mt-3">+Rs. 350</div>
+            </button>
+            <button onclick="selectPatty('Crispy Zinger', 280)" class="patty-btn text-left p-4 rounded-2xl border bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700 transition-all">
+              <div class="font-semibold text-xs text-white">Crispy Zinger</div>
+              <div class="text-[11px] text-neutral-500 mt-1">Hand-battered fillet</div>
+              <div class="text-xs font-bold text-red-400 mt-3">+Rs. 280</div>
+            </button>
+            <button onclick="selectPatty('Flame Grilled Chicken', 290)" class="patty-btn text-left p-4 rounded-2xl border bg-neutral-900/80 border-neutral-800/80 text-neutral-400 hover:border-neutral-700 transition-all">
+              <div class="font-semibold text-xs text-white">Flame Grilled Chicken</div>
+              <div class="text-[11px] text-neutral-500 mt-1">Herb marinated</div>
+              <div class="text-xs font-bold text-red-400 mt-3">+Rs. 290</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Patty Count Slider -->
+        <div>
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center space-x-3">
+              <span class="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">3</span>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Patty Count</h3>
+            </div>
+            <span id="patty-count-badge" class="text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded-full">
+              2 Patties
+            </span>
+          </div>
+          <input id="patty-range" type="range" min="1" max="4" value="2" oninput="updatePattyCount(this.value)" class="w-full accent-red-500 h-2 bg-neutral-800 rounded-lg cursor-pointer">
+        </div>
+
+        <!-- Step 4: Toppings -->
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <span class="w-7 h-7 rounded-full bg-red-600/20 text-red-500 border border-red-500/30 flex items-center justify-center text-xs font-bold">4</span>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Add Toppings & Cheese</h3>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="toggleTopping(this, 'cheddar', 80)" class="topping-btn bg-neutral-800 border-red-500/60 text-white flex items-center justify-between p-3.5 rounded-2xl border transition-all">
+              <span class="text-xs font-medium">Aged Cheddar</span>
+              <span class="text-xs font-bold text-neutral-400">+Rs. 80</span>
+            </button>
+            <button onclick="toggleTopping(this, 'bacon', 120)" class="topping-btn bg-neutral-900/80 border-neutral-800/80 text-neutral-400 flex items-center justify-between p-3.5 rounded-2xl border transition-all">
+              <span class="text-xs font-medium">Crispy Beef Bacon</span>
+              <span class="text-xs font-bold text-neutral-400">+Rs. 120</span>
+            </button>
+            <button onclick="toggleTopping(this, 'jalapenos', 40)" class="topping-btn bg-neutral-900/80 border-neutral-800/80 text-neutral-400 flex items-center justify-between p-3.5 rounded-2xl border transition-all">
+              <span class="text-xs font-medium">Pickled Jalapeños</span>
+              <span class="text-xs font-bold text-neutral-400">+Rs. 40</span>
+            </button>
+            <button onclick="toggleTopping(this, 'sauce', 50)" class="topping-btn bg-neutral-800 border-red-500/60 text-white flex items-center justify-between p-3.5 rounded-2xl border transition-all">
+              <span class="text-xs font-medium">Secret Lab Sauce</span>
+              <span class="text-xs font-bold text-neutral-400">+Rs. 50</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Stack Preview Side Panel -->
+      <div class="lg:col-span-5 sticky top-28 bg-neutral-900/60 border border-neutral-800 p-6 md:p-8 rounded-3xl backdrop-blur-md space-y-6 shadow-2xl">
+        <div class="text-center border-b border-neutral-800 pb-4">
+          <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest">Live Visualizer</span>
+          <h3 class="text-xl font-black text-white mt-1">Custom Stack Preview</h3>
+        </div>
+
+        <!-- Burger Visual Stack -->
+        <div id="burger-visual-stack" class="py-6 flex flex-col items-center justify-center space-y-1.5 min-h-[220px]">
+          <!-- Dynamic JS stack output -->
+        </div>
+
+        <!-- Total Price & Button -->
+        <div class="pt-4 border-t border-neutral-800 space-y-4">
+          <div class="flex justify-between items-baseline">
+            <span class="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Total Price</span>
+            <div class="text-right">
+              <span class="text-xs text-neutral-500 mr-1">PKR</span>
+              <span id="total-price-text" class="text-3xl font-black text-white">Rs. 950</span>
+            </div>
+          </div>
+
+          <button class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold py-4 rounded-2xl flex items-center justify-center space-x-2 shadow-xl shadow-red-600/20 transition-all hover:scale-[1.01] active:scale-[0.99]">
+            <span>Add Custom Burger</span>
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="border-t border-neutral-800/80 bg-neutral-900/20 py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <span class="text-xs font-bold text-red-500 uppercase tracking-widest">Customer Feedback</span>
+        <h2 class="text-3xl font-black text-white mt-1">Loved By Foodies</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-neutral-900/80 border border-neutral-800 p-6 rounded-2xl space-y-3">
+          <div class="flex items-center space-x-1 text-amber-400">
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          </div>
+          <p class="text-sm text-neutral-300 italic">"Karachi mein aisa smashed burger pehle kabhi nahi khaya! Customizer zabardast hai."</p>
+          <div class="flex justify-between items-center text-xs text-neutral-500 pt-2 border-t border-neutral-800">
+            <span class="font-bold text-neutral-200">Ali Ahmed</span>
+            <span>Yesterday</span>
+          </div>
+        </div>
+
+        <div class="bg-neutral-900/80 border border-neutral-800 p-6 rounded-2xl space-y-3">
+          <div class="flex items-center space-x-1 text-amber-400">
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          </div>
+          <p class="text-sm text-neutral-300 italic">"Packaging bohot hi classy hai aur burger hamesha piping hot milta hai."</p>
+          <div class="flex justify-between items-center text-xs text-neutral-500 pt-2 border-t border-neutral-800">
+            <span class="font-bold text-neutral-200">Sara Khan</span>
+            <span>3 days ago</span>
+          </div>
+        </div>
+
+        <div class="bg-neutral-900/80 border border-neutral-800 p-6 rounded-2xl space-y-3">
+          <div class="flex items-center space-x-1 text-amber-400">
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+          </div>
+          <p class="text-sm text-neutral-300 italic">"Live burger preview build karna super cool feature hai. Highly recommended!"</p>
+          <div class="flex justify-between items-center text-xs text-neutral-500 pt-2 border-t border-neutral-800">
+            <span class="font-bold text-neutral-200">Hamza Malik</span>
+            <span>1 week ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modern Classy Footer -->
+  <footer id="branches" class="bg-neutral-950 border-t border-neutral-800 text-neutral-400 py-12 px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+      
+      <!-- Brand Info -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-xl bg-red-600 flex items-center justify-center font-bold text-white">G</div>
+          <span class="font-black text-white tracking-tight">GRILL & CHILL</span>
+        </div>
+        <p class="text-xs leading-relaxed text-neutral-500">
+          Karachi & Lahore's premier smash burger destination. Fresh ingredients, artisanal buns, and signature sauces daily[cite: 3].
+        </p>
+        <div class="flex space-x-4 text-neutral-400 pt-2">
+          <i data-lucide="instagram" class="w-5 h-5 hover:text-white cursor-pointer transition-colors"></i>
+          <i data-lucide="facebook" class="w-5 h-5 hover:text-white cursor-pointer transition-colors"></i>
+          <i data-lucide="twitter" class="w-5 h-5 hover:text-white cursor-pointer transition-colors"></i>
+        </div>
+      </div>
+
+      <!-- Locations -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold text-white uppercase tracking-wider">Our Branches</h4>
+        <ul class="space-y-2 text-xs">
+          <li class="flex items-center space-x-2"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-red-500"></i><span>Karachi: DHA Phase 6 & Gulshan</span></li>
+          <li class="flex items-center space-x-2"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-red-500"></i><span>Lahore: MM Alam Road & Gulberg</span></li>
+        </ul>
+      </div>
+
+      <!-- Quick Navigation -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold text-white uppercase tracking-wider">Quick Navigation</h4>
+        <ul class="space-y-2 text-xs">
+          <li><a href="#menu" class="hover:text-white transition-colors">Gourmet Burgers</a></li>
+          <li><a href="#builder" class="hover:text-white transition-colors">Custom Burger Builder</a></li>
+          <li><a href="#deals" class="hover:text-white transition-colors">Exclusive Combos</a></li>
+          <li><a href="#reviews" class="hover:text-white transition-colors">Customer Reviews</a></li>
+        </ul>
+      </div>
+
+      <!-- Hours & Contact -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold text-white uppercase tracking-wider">Working Hours</h4>
+        <p class="text-xs text-neutral-500">Monday - Sunday: 12:00 PM – 03:00 AM[cite: 3]</p>
+        <div class="pt-2 text-xs space-y-1">
+          <p class="flex items-center space-x-2"><i data-lucide="phone" class="w-3.5 h-3.5 text-red-500"></i><span>+92 300 1234567</span></p>
+          <p class="flex items-center space-x-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-red-500"></i><span>orders@grillandchill.pk</span></p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="max-w-7xl mx-auto pt-6 border-t border-neutral-900 flex flex-col sm:flex-row justify-between items-center text-[11px] text-neutral-600">
+      <p>© 2026 Grill & Chill - The Burger Lab. All rights reserved.</p>
+      <div class="flex space-x-6 mt-4 sm:mt-0">
+        <a href="#" class="hover:text-neutral-400">Privacy Policy</a>
+        <a href="#" class="hover:text-neutral-400">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script for Interactive Visualizer -->
+  <script>
+    lucide.createIcons();
+
+    let currentBun = { name: 'Brioche', price: 120 };
+    let currentPatty = { name: 'Smash Angus Beef', price: 350 };
+    let pattyCount = 2;
+    let selectedToppings = {
+      cheddar: { name: 'Aged Cheddar', price: 80, selected: true },
+      bacon: { name: 'Crispy Beef Bacon', price: 120, selected: false },
+      jalapenos: { name: 'Pickled Jalapeños', price: 40, selected: false },
+      sauce: { name: 'Secret Lab Sauce', price: 50, selected: true }
+    };
+
+    function selectBun(name, price) {
+      currentBun = { name, price };
+      updateUI();
+    }
+
+    function selectPatty(name, price) {
+      currentPatty = { name, price };
+      updateUI();
+    }
+
+    function updatePattyCount(val) {
+      pattyCount = parseInt(val);
+      document.getElementById('patty-count-badge').innerText = pattyCount + (pattyCount === 1 ? ' Patty' : ' Patties');
+      updateUI();
+    }
+
+    function toggleTopping(btn, key, price) {
+      selectedToppings[key].selected = !selectedToppings[key].selected;
+      btn.classList.toggle('bg-neutral-800');
+      btn.classList.toggle('border-red-500/60');
+      btn.classList.toggle('text-white');
+      btn.classList.toggle('bg-neutral-900/80');
+      btn.classList.toggle('border-neutral-800/80');
+      btn.classList.toggle('text-neutral-400');
+      updateUI();
+    }
+
+    function updateUI() {
+      // Calculate Price
+      let toppingsTotal = 0;
+      for (let key in selectedToppings) {
+        if (selectedToppings[key].selected) toppingsTotal += selectedToppings[key].price;
+      }
+      let total = currentBun.price + (currentPatty.price * pattyCount) + toppingsTotal;
+      document.getElementById('total-price-text').innerText = 'Rs. ' + total;
+
+      // Update Visual Stack
+      const stack = document.getElementById('burger-visual-stack');
+      let html = `<div class="w-48 h-10 bg-amber-600 rounded-t-full border-b-2 border-amber-700 shadow-inner flex items-center justify-center text-[11px] font-bold text-amber-100">${currentBun.name} (Top)</div>`;
+
+      if (selectedToppings.sauce.selected) html += `<div class="w-44 h-2 bg-red-500 rounded-full opacity-90 animate-pulse"></div>`;
+      if (selectedToppings.cheddar.selected) html += `<div class="w-46 h-2 bg-yellow-400 rounded-sm shadow-sm"></div>`;
+      if (selectedToppings.jalapenos.selected) html += `<div class="w-40 h-2 bg-emerald-600 rounded-full"></div>`;
+      if (selectedToppings.bacon.selected) html += `<div class="w-42 h-2.5 bg-red-900 rounded-sm"></div>`;
+
+      for (let i = 0; i < pattyCount; i++) {
+        html += `<div class="w-48 h-6 bg-amber-950 rounded-lg border-b border-amber-900 flex items-center justify-center text-[10px] font-semibold text-amber-200/80 shadow-md">${currentPatty.name} #${i + 1}</div>`;
+      }
+
+      html += `<div class="w-48 h-6 bg-amber-700 rounded-b-xl border-t border-amber-800 flex items-center justify-center text-[10px] font-bold text-amber-100">${currentBun.name} (Bottom)</div>`;
+      stack.innerHTML = html;
+    }
+
+    // Initial render
+    updateUI();
+  </script>
+</bod
